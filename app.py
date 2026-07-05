@@ -63,7 +63,7 @@ something worth remembering, note it clearly (the system stores it).
 
 {memory_block}"""
 
-nvidia = OpenAI(base_url=NVIDIA_BASE_URL, api_key=NVIDIA_API_KEY)
+nvidia = OpenAI(base_url=NVIDIA_BASE_URL, api_key=NVIDIA_API_KEY, timeout=25.0)
 
 _redis = None
 def get_redis():
@@ -194,7 +194,7 @@ def call_nvidia(messages: list[dict], model: str, system: str) -> str:
 
 def call_claude(messages: list[dict], system: str) -> str:
     import anthropic
-    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
+    client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY, timeout=25.0)
     resp = client.messages.create(
         model=MODEL_CLAUDE,
         max_tokens=1024,
