@@ -102,9 +102,11 @@ def learn_from_exchange(user_msg: str, assistant_msg: str, store_fn, search_fn) 
     facts = extract_facts(user_msg, assistant_msg)
     stored = 0
     for f in facts:
-        # dedup: if a very similar fact already indexed, skip
-        similar = search_fn(f["content"], k=1)
-        if similar and similar[0].get("score", 0) > 0.85:
+        # dedup: skip only exact/near-exact repeats among existing FACTS
+        # (score is rank-based, not a real similarity — don't trust it as
+        # a threshold; compare normalized content hashes instead)
+        similar = search_fn(f["content"], k=1, kind="fact")
+        if similar and content_hash(similar[0]["content"]) == content_hash(f["content"]):
             continue
         store_fn(f["content"], f["category"], source="janet-learn")
         stored += 1

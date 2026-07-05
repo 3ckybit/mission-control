@@ -69,7 +69,10 @@ _redis = None
 def get_redis():
     global _redis
     if _redis is None and REDIS_URL:
-        _redis = redis_lib.from_url(REDIS_URL, password=REDIS_TOKEN)
+        _redis = redis_lib.from_url(
+            REDIS_URL, password=REDIS_TOKEN,
+            socket_connect_timeout=3, socket_timeout=3,
+        )
     return _redis
 
 
@@ -134,18 +137,24 @@ def get_spend_today() -> float:
     r = get_redis()
     if not r:
         return 0.0
-    key = f"budget:{date.today().isoformat()}"
-    val = r.get(key)
-    return float(val) if val else 0.0
+    try:
+        key = f"budget:{date.today().isoformat()}"
+        val = r.get(key)
+        return float(val) if val else 0.0
+    except Exception:
+        return 0.0
 
 
 def add_spend(usd: float):
     r = get_redis()
     if not r:
         return
-    key = f"budget:{date.today().isoformat()}"
-    r.incrbyfloat(key, usd)
-    r.expire(key, 86400 * 3)
+    try:
+        key = f"budget:{date.today().isoformat()}"
+        r.incrbyfloat(key, usd)
+        r.expire(key, 86400 * 3)
+    except Exception:
+        pass
 
 
 # ── Routing ───────────────────────────────────────────────────────────────────
