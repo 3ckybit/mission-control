@@ -46,7 +46,7 @@ DAILY_BUDGET_USD = float(os.environ.get("DAILY_BUDGET_USD", "2.00"))
 MODEL_FAST = "meta/llama-3.1-8b-instruct"
 MODEL_MAIN = "nvidia/llama-3.3-nemotron-super-49b-v1"
 MODEL_LARGE = "qwen/qwen3.5-122b-a10b"
-MODEL_CLAUDE = "claude-sonnet-4-6"  # escalation only
+MODEL_CLAUDE = "claude-sonnet-5"  # escalation only
 
 JANET_SYSTEM = """You are Janet — Alex's central AI assistant, running on his \
 Raspberry Pi mission control. Alex Vlachos, Seville, Spain. Projects: Taxi \
